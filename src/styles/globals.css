@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+  body {
+    font-family: "Comic Neue", cursive;
+    background-color: #FFF8E7;
+    color: #1A1A1A;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FFF8E7;
+    border-left: 2px solid #1A1A1A;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1A1A1A;
+  }
+}
+
+@layer utilities {
+  .font-bangers {
+    font-family: "Bangers", cursive;
+  }
+  .comic-panel {
+    border: 3px solid #1A1A1A;
+    box-shadow: 5px 5px 0 #1A1A1A;
+  }
+  .comic-panel-heavy {
+    border: 4px solid #1A1A1A;
+    box-shadow: 7px 7px 0 #1A1A1A;
+  }
+}
