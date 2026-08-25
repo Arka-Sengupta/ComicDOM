@@ -5,6 +5,9 @@
 
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     font-family: "Comic Neue", cursive;
     background-color: #FFF8E7;
@@ -13,15 +16,23 @@
   * {
     box-sizing: border-box;
   }
+  ::selection {
+    background: #FFD700;
+    color: #1A1A1A;
+  }
   ::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
   }
   ::-webkit-scrollbar-track {
     background: #FFF8E7;
-    border-left: 2px solid #1A1A1A;
+    border-left: 3px solid #1A1A1A;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1A1A1A;
+    background: #FFD700;
+    border: 2px solid #1A1A1A;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ED1D24;
   }
 }
 
@@ -37,4 +48,126 @@
     border: 4px solid #1A1A1A;
     box-shadow: 7px 7px 0 #1A1A1A;
   }
+
+  /* Interactive "sticker" feel: lifts on hover, presses into its shadow on click. */
+  .comic-press {
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .comic-press:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #1A1A1A;
+  }
+  .comic-press:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 #1A1A1A;
+  }
+
+  .animate-float {
+    animation: comic-float 3.4s ease-in-out infinite;
+  }
+  .animate-wobble {
+    animation: comic-wobble 3s ease-in-out infinite;
+  }
+  .animate-pulse-soft {
+    animation: comic-pulse 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes comic-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes comic-wobble {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50%      { transform: rotate(2.5deg); }
+}
+
+@keyframes comic-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+@keyframes comic-pop {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* Accessibility: honour users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* SweetAlert2 Comic Theme */
+.comic-swal-popup {
+  border: 4px solid #1A1A1A !important;
+  box-shadow: 8px 8px 0 #1A1A1A !important;
+  border-radius: 0 !important;
+  background-color: #FFF8E7 !important;
+  padding: 1.8rem !important;
+}
+
+.comic-swal-title {
+  font-family: "Bangers", cursive !important;
+  font-size: 2rem !important;
+  letter-spacing: 0.08em !important;
+  color: #1A1A1A !important;
+  text-shadow: 2px 2px 0 #FFD700 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.comic-swal-html {
+  font-family: "Comic Neue", cursive !important;
+  font-size: 1.05rem !important;
+  color: #333 !important;
+  line-height: 1.5 !important;
+}
+
+.comic-swal-confirm {
+  font-family: "Bangers", cursive !important;
+  font-size: 1.15rem !important;
+  letter-spacing: 0.08em !important;
+  padding: 8px 22px !important;
+  background-color: #ED1D24 !important;
+  color: #fff !important;
+  border: 3px solid #1A1A1A !important;
+  box-shadow: 4px 4px 0 #1A1A1A !important;
+  cursor: pointer !important;
+  margin: 0.5rem !important;
+  transition: transform 0.1s, box-shadow 0.1s !important;
+}
+
+.comic-swal-confirm:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0 #1A1A1A !important;
+}
+
+.comic-swal-cancel {
+  font-family: "Bangers", cursive !important;
+  font-size: 1.15rem !important;
+  letter-spacing: 0.08em !important;
+  padding: 8px 22px !important;
+  background-color: #fff !important;
+  color: #1A1A1A !important;
+  border: 3px solid #1A1A1A !important;
+  box-shadow: 4px 4px 0 #1A1A1A !important;
+  cursor: pointer !important;
+  margin: 0.5rem !important;
+  transition: transform 0.1s, box-shadow 0.1s !important;
+}
+
+.comic-swal-cancel:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0 #1A1A1A !important;
 }

@@ -16,18 +16,18 @@ function getTailStyle(dir: Tail, color: string): { outer: CSSProperties; inner: 
   if (dir === 'bottom-left') {
     return {
       outer: { ...base, bottom: -17, left: 22, borderLeft: '11px solid transparent', borderRight: '11px solid transparent', borderTop: '17px solid #1A1A1A' },
-      inner: { ...base, bottom: -13, left: 25, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: `13px solid $color}` },
+      inner: { ...base, bottom: -13, left: 25, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: `13px solid ${color}` },
     }
   }
   if (dir === 'bottom-right') {
     return {
       outer: { ...base, bottom: -17, right: 22, borderLeft: '11px solid transparent', borderRight: '11px solid transparent', borderTop: '17px solid #1A1A1A' },
-      inner: { ...base, bottom: -13, right: 25, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: `13px solid $color}` },
+      inner: { ...base, bottom: -13, right: 25, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: `13px solid ${color}` },
     }
   }
   return {
     outer: { ...base, top: -17, left: 22, borderLeft: '11px solid transparent', borderRight: '11px solid transparent', borderBottom: '17px solid #1A1A1A' },
-    inner: { ...base, top: -13, left: 25, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderBottom: `13px solid $color}` },
+    inner: { ...base, top: -13, left: 25, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderBottom: `13px solid ${color}` },
   }
 }
 

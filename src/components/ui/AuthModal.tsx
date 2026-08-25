@@ -29,7 +29,7 @@ const inputStyle: React.CSSProperties = {
 }
 
 export default function AuthModal({ isOpen, onClose }: Props) {
-  const { user } = useAuth()
+  const { user, userProfile } = useAuth()
   const [tab, setTab] = useState<Tab>("login")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -115,14 +115,77 @@ export default function AuthModal({ isOpen, onClose }: Props) {
             <div style={{ padding: "1.5rem" }}>
               {user ? (
                 <div style={{ textAlign: "center" }}>
-                  <p style={{ fontFamily: "Bangers, cursive", fontSize: "1rem", letterSpacing: "0.08em", color: "#1A1A1A", marginBottom: "0.3rem" }}>LOGGED IN AS:</p>
-                  <p style={{ fontFamily: "Comic Neue, cursive", color: "#555", marginBottom: "1.5rem", wordBreak: "break-all" }}>
-                    {user.displayName || user.email}
+                  {/* Avatar badge */}
+                  <div
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      border: "3px solid #1A1A1A",
+                      boxShadow: "3px 3px 0 #1A1A1A",
+                      margin: "0 auto 1rem",
+                      backgroundColor: "#FFD700",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <img
+                      src={userProfile?.photoURL || user.photoURL || "/avatars/avatar-12.svg"}
+                      alt="Avatar"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+
+                  <p style={{ fontFamily: "Bangers, cursive", fontSize: "1rem", letterSpacing: "0.08em", color: "#1A1A1A", marginBottom: "0.2rem" }}>
+                    OPERATIVE:
                   </p>
-                  <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} onClick={handleLogout}
-                    style={{ fontFamily: "Bangers, cursive", fontSize: "1.1rem", letterSpacing: "0.1em", padding: "9px 24px", backgroundColor: "#ED1D24", color: "#fff", border: "3px solid #1A1A1A", boxShadow: "4px 4px 0 #1A1A1A", cursor: "pointer", width: "100%" }}>
-                    SIGN OUT
-                  </motion.button>
+                  <h3 style={{ fontFamily: "Bangers, cursive", fontSize: "1.6rem", letterSpacing: "0.06em", color: "#ED1D24", margin: "0 0 0.2rem" }}>
+                    {userProfile?.displayName || user.displayName || "HERO"}
+                  </h3>
+                  <p style={{ fontFamily: "Comic Neue, cursive", fontSize: "0.85rem", color: "#666", marginBottom: "1.25rem", wordBreak: "break-all" }}>
+                    {user.email}
+                  </p>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                    <a
+                      href="/profile"
+                      onClick={() => onClose()}
+                      style={{
+                        textDecoration: "none",
+                        display: "block",
+                        fontFamily: "Bangers, cursive",
+                        fontSize: "1.1rem",
+                        letterSpacing: "0.1em",
+                        padding: "9px 20px",
+                        backgroundColor: "#0476F2",
+                        color: "#fff",
+                        border: "3px solid #1A1A1A",
+                        boxShadow: "4px 4px 0 #1A1A1A",
+                        cursor: "pointer",
+                      }}
+                    >
+                      MANAGE PROFILE &amp; AVATAR &rarr;
+                    </a>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={handleLogout}
+                      style={{
+                        fontFamily: "Bangers, cursive",
+                        fontSize: "1.1rem",
+                        letterSpacing: "0.1em",
+                        padding: "9px 20px",
+                        backgroundColor: "#ED1D24",
+                        color: "#fff",
+                        border: "3px solid #1A1A1A",
+                        boxShadow: "4px 4px 0 #1A1A1A",
+                        cursor: "pointer",
+                        width: "100%",
+                      }}
+                    >
+                      SIGN OUT
+                    </motion.button>
+                  </div>
                 </div>
               ) : (
                 <>

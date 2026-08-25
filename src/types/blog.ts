@@ -1,4 +1,11 @@
-import { Timestamp } from "firebase/firestore"
+import { Timestamp, Bytes } from "firebase/firestore"
+
+export interface BlogImageAttachment {
+  id: string
+  name: string
+  mimeType: string
+  data: Bytes | string
+}
 
 export interface BlogDoc {
   id: string
@@ -11,4 +18,19 @@ export interface BlogDoc {
   readTime: string
   featured: boolean
   authorUid: string
+  authorName?: string
+  authorPhotoURL?: string
+  coverImage?: BlogImageAttachment
+  images?: BlogImageAttachment[]
+}
+
+export interface CommentDoc {
+  id: string
+  blogId: string
+  content: string
+  authorUid: string
+  authorName: string
+  authorPhotoURL: string
+  authorIsAdmin?: boolean
+  createdAt?: Timestamp
 }

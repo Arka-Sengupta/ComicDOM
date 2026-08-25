@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import Reveal from '../ui/Reveal'
 
 const LINKS = [
   { to: '/',          label: 'Home' },
@@ -21,7 +22,7 @@ export default function Footer() {
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2rem' }}>
 
         {/* Brand */}
-        <div>
+        <Reveal direction="up" delay={0}>
           <div style={{ fontFamily: 'Bangers, cursive', fontSize: '3rem', letterSpacing: '0.08em', lineHeight: 1, marginBottom: '0.5rem' }}>
             <span style={{ color: '#ED1D24' }}>COMIC</span>
             <span style={{ color: '#0476F2' }}>DOM</span>
@@ -29,10 +30,10 @@ export default function Footer() {
           <p style={{ fontFamily: 'Comic Neue, cursive', fontSize: '0.9rem', color: '#aaa', maxWidth: 240 }}>
             Your retro-styled, modern knowledge base for all things comic book cinema.
           </p>
-        </div>
+        </Reveal>
 
         {/* Quick Links */}
-        <div>
+        <Reveal direction="up" delay={0.1}>
           <h4 style={{ fontFamily: 'Bangers, cursive', fontSize: '1.5rem', letterSpacing: '0.1em', color: '#FFD700', marginBottom: '0.75rem' }}>
             NAVIGATE
           </h4>
@@ -46,22 +47,24 @@ export default function Footer() {
                   color: '#ccc',
                   textDecoration: 'underline',
                   fontSize: '0.95rem',
-                  transition: 'color 0.15s',
+                  width: 'fit-content',
+                  transition: 'color 0.15s, transform 0.15s',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#FFD700')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#ccc')}
+                onMouseEnter={e => { e.currentTarget.style.color = '#FFD700'; e.currentTarget.style.transform = 'translateX(5px)' }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.transform = 'translateX(0)' }}
               >
                 {l.label}
               </Link>
             ))}
           </div>
-        </div>
+        </Reveal>
 
         {/* Wobble badge */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Reveal direction="up" delay={0.2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <motion.div
             animate={{ rotate: [-2, 2, -2] }}
             transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.05 }}
             style={{
               backgroundColor: '#fff',
               border: '3px solid #FFD700',
@@ -77,7 +80,7 @@ export default function Footer() {
               LOVE Y'ALL 3000
             </p>
           </motion.div>
-        </div>
+        </Reveal>
       </div>
 
       <div style={{ maxWidth: 1200, margin: '2rem auto 0', borderTop: '2px solid #333', paddingTop: '1rem', textAlign: 'center' }}>

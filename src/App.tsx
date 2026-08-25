@@ -3,11 +3,14 @@ import { AnimatePresence } from "framer-motion"
 import { AuthProvider } from "./context/AuthContext"
 import Navbar from "./components/layout/Navbar"
 import Footer from "./components/layout/Footer"
+import ScrollProgress from "./components/ui/ScrollProgress"
 import Home from "./pages/Home"
 import Marvel from "./pages/Marvel"
 import DC from "./pages/DC"
 import DevBlogs from "./pages/DevBlogs"
 import BlogPost from "./pages/BlogPost"
+import Profile from "./pages/Profile"
+import NotFound from "./pages/404"
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -19,6 +22,8 @@ function AnimatedRoutes() {
         <Route path="/dc" element={<DC />} />
         <Route path="/dev-blogs" element={<DevBlogs />} />
         <Route path="/dev-blogs/:id" element={<BlogPost />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
   )
@@ -27,6 +32,7 @@ function AnimatedRoutes() {
 function AppShell() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <ScrollProgress />
       <Navbar />
       <main style={{ flex: 1 }}>
         <AnimatedRoutes />
