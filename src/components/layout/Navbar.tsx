@@ -9,15 +9,17 @@ const NAV = [
   { path: "/marvel",    label: "MARVEL" },
   { path: "/dc",        label: "DC" },
   { path: "/dev-blogs", label: "GAZETTE" },
+  // { path: "/profile",   label: "DOSSIER HQ" },
 ]
 
 export default function Navbar() {
   const { pathname } = useLocation()
-  const { user, isAdmin, loading } = useAuth()
+  const { user, userProfile, isAdmin, loading } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
 
-  const displayName = user?.displayName?.split(" ")[0] || user?.email?.split("@")[0] || "USER"
+  const displayName = userProfile?.displayName?.split(" ")[0] || user?.displayName?.split(" ")[0] || user?.email?.split("@")[0] || "USER"
+  const avatarUrl = userProfile?.photoURL || user?.photoURL || "/avatars/avatar-12.svg"
 
   return (
     <>
@@ -45,8 +47,15 @@ export default function Navbar() {
               return (
                 <Link key={link.path} to={link.path} style={{ textDecoration: "none" }}>
                   <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.95 }}
-                    style={{ fontFamily: "Bangers, cursive", fontSize: "1.1rem", letterSpacing: "0.1em", padding: "6px 14px", border: "3px solid #1A1A1A", boxShadow: active ? "3px 3px 0 #ED1D24" : "3px 3px 0 #1A1A1A", backgroundColor: active ? "#1A1A1A" : "#fff", color: active ? "#FFD700" : "#1A1A1A", transition: "all 0.15s ease" }}>
+                    style={{ position: "relative", fontFamily: "Bangers, cursive", fontSize: "1.1rem", letterSpacing: "0.1em", padding: "6px 14px", border: "3px solid #1A1A1A", boxShadow: active ? "3px 3px 0 #ED1D24" : "3px 3px 0 #1A1A1A", backgroundColor: active ? "#1A1A1A" : "#fff", color: active ? "#FFD700" : "#1A1A1A", transition: "all 0.15s ease" }}>
                     {link.label}
+                    {active && (
+                      <motion.div
+                        layoutId="navActiveBar"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        style={{ position: "absolute", left: 5, right: 5, bottom: 3, height: 4, backgroundColor: "#FFD700" }}
+                      />
+                    )}
                   </motion.div>
                 </Link>
               )
@@ -57,12 +66,34 @@ export default function Navbar() {
               <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.95 }} onClick={() => setAuthOpen(true)}
                 style={{
                   fontFamily: "Bangers, cursive", fontSize: "1.05rem", letterSpacing: "0.1em",
-                  padding: "6px 14px", border: "3px solid #1A1A1A", cursor: "pointer",
+                  padding: "5px 12px", border: "3px solid #1A1A1A", cursor: "pointer",
                   boxShadow: "3px 3px 0 #1A1A1A",
                   backgroundColor: user ? (isAdmin ? "#ED1D24" : "#0476F2") : "#1A1A1A",
                   color: user ? "#fff" : "#FFD700",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.45rem",
                 }}>
-                {!user ? "LOG IN" : isAdmin ? "ADMIN " + displayName.toUpperCase() : displayName.toUpperCase()}
+                {user && (
+                  <div
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: "50%",
+                      border: "2px solid #1A1A1A",
+                      overflow: "hidden",
+                      backgroundColor: "#fff",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <img
+                      src={avatarUrl}
+                      alt="Avatar"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+                )}
+                <span>{!user ? "LOG IN" : isAdmin ? "ADMIN " + displayName.toUpperCase() : displayName.toUpperCase()}</span>
               </motion.button>
             )}
           </div>

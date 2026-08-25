@@ -31,7 +31,7 @@ export default function DC() {
           textAlign: 'center',
         }}
       >
-        <div style={{ position: 'absolute', top: 20, left: 20, opacity: 0.32 }}>
+        <div className="animate-wobble" style={{ position: 'absolute', top: 20, left: 20, opacity: 0.32 }}>
           <ActionWord word="SHAZAM!" color="#FFD700" size="lg" rotate={8} />
         </div>
 

@@ -4,12 +4,21 @@ service cloud.firestore {
     // Anyone can read blogs; only the admin UID can write
     match /blogs/{blogId} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == "ADMIN_UID";
+      allow write: if request.auth != null && request.auth.uid == "cONXdftHJ1eRl9xof2QheUY1L4l2";
     }
-    // Anyone can read comments; logged-in users can write them
+    // Anyone can read comments; logged-in users can write; admin or comment author can delete
     match /blogs/{blogId}/comments/{commentId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && (
+        request.auth.uid == resource.data.authorUid ||
+        request.auth.uid == "cONXdftHJ1eRl9xof2QheUY1L4l2"
+      );
+    }
+    // Users profile collection: Anyone can read, only the logged-in owner can write their own profile
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }

@@ -1,32 +1,39 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform, useReducedMotion, MotionValue } from 'framer-motion'
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore'
+import { db } from '../firebase'
+import { BlogDoc } from '../types/blog'
 import PageTransition from '../components/ui/PageTransition'
 import HalftoneSection from '../components/ui/HalftoneSection'
 import SpeechBubble from '../components/ui/SpeechBubble'
 import ActionWord from '../components/ui/ActionWord'
-import BlogCard from '../components/ui/BlogCard'
-import { blogPosts } from '../data/blogs'
+import BlogCardDynamic from '../components/ui/BlogCardDynamic'
+import Reveal from '../components/ui/Reveal'
 
-function StarBurst({ style }: { style?: React.CSSProperties }) {
+function StarBurst({ style, y }: { style?: React.CSSProperties; y?: MotionValue<number> }) {
   return (
     <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ repeat: Infinity, duration: 22, ease: 'linear' }}
-      style={{ position: 'absolute', pointerEvents: 'none', userSelect: 'none', ...style }}
+      style={{ position: 'absolute', pointerEvents: 'none', userSelect: 'none', y, ...style }}
     >
-      {/* <svg width="110" height="110" viewBox="0 0 110 110">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <line
-            key={i}
-            x1="55" y1="55"
-            x2={55 + 50 * Math.cos((i * 30 * Math.PI) / 180)}
-            y2={55 + 50 * Math.sin((i * 30 * Math.PI) / 180)}
-            stroke="#1A1A1A"
-            strokeWidth="3"
-          />
-        ))}
-        <circle cx="55" cy="55" r="14" fill="#FFD700" stroke="#1A1A1A" strokeWidth="3" />
-      </svg> */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 22, ease: 'linear' }}
+      >
+        <svg width="130" height="130" viewBox="0 0 110 110">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <line
+              key={i}
+              x1="55" y1="55"
+              x2={55 + 50 * Math.cos((i * 30 * Math.PI) / 180)}
+              y2={55 + 50 * Math.sin((i * 30 * Math.PI) / 180)}
+              stroke="#1A1A1A"
+              strokeWidth="3"
+            />
+          ))}
+          <circle cx="55" cy="55" r="14" fill="#FFD700" stroke="#1A1A1A" strokeWidth="3" />
+        </svg>
+      </motion.div>
     </motion.div>
   )
 }
@@ -38,6 +45,31 @@ const ABOUT = [
 ]
 
 export default function Home() {
+  const [latestPosts, setLatestPosts] = useState<BlogDoc[]>([])
+  const [loadingPosts, setLoadingPosts] = useState(true)
+
+  useEffect(() => {
+    const q = query(collection(db, "blogs"), orderBy("createdAt", "desc"), limit(2))
+    const unsub = onSnapshot(
+      q,
+      (snap) => {
+        setLatestPosts(snap.docs.map((d) => ({ id: d.id, ...d.data() } as BlogDoc)))
+        setLoadingPosts(false)
+      },
+      () => {
+        setLoadingPosts(false)
+      }
+    )
+    return () => unsub()
+  }, [])
+
+  const reduce = useReducedMotion()
+  const { scrollY } = useScroll()
+  const yFar = useTransform(scrollY, [0, 700], [0, 200])
+  const yMid = useTransform(scrollY, [0, 700], [0, 130])
+  const yNear = useTransform(scrollY, [0, 700], [0, 70])
+  const cueOpacity = useTransform(scrollY, [0, 240], [1, 0])
+
   return (
     <PageTransition>
       {/* HERO */}
@@ -45,9 +77,9 @@ export default function Home() {
         color="yellow"
         style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '5rem 1rem', position: 'relative', overflow: 'hidden' }}
       >
-        <StarBurst style={{ top: 40, left: 40, opacity: 0.65 }} />
-        <StarBurst style={{ bottom: 80, right: 60, opacity: 0.45 }} />
-        <StarBurst style={{ top: '45%', right: 20, opacity: 0.25 }} />
+        <StarBurst style={{ top: 40, left: 40, opacity: 0.65 }} y={reduce ? undefined : yFar} />
+        <StarBurst style={{ bottom: 80, right: 60, opacity: 0.45 }} y={reduce ? undefined : yMid} />
+        <StarBurst style={{ top: '45%', right: 20, opacity: 0.25 }} y={reduce ? undefined : yNear} />
 
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
@@ -112,14 +144,21 @@ export default function Home() {
           ))}
         </motion.div>
 
-        {/* <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.6 }}
-          style={{ position: 'absolute', bottom: '2rem', fontFamily: 'Bangers, cursive', letterSpacing: '0.1em', fontSize: '0.9rem', color: '#1A1A1A', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
+        {/* SCROLL CUE */}
+        <motion.div
+          style={{ position: 'absolute', bottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, opacity: reduce ? 1 : cueOpacity, pointerEvents: 'none', zIndex: 1 }}
         >
-          <span>SCROLL DOWN</span>
-          <span style={{ fontSize: '1.4rem' }}>\u2193</span>
-        </motion.div> */}
+          <span style={{ fontFamily: 'Bangers, cursive', letterSpacing: '0.1em', fontSize: '0.9rem', color: '#1A1A1A' }}>
+            SCROLL DOWN
+          </span>
+          <motion.span
+            animate={{ y: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+            style={{ fontSize: '1.6rem', lineHeight: 1, color: '#1A1A1A' }}
+          >
+            &darr;
+          </motion.span>
+        </motion.div>
       </HalftoneSection>
 
       {/* ABOUT STRIP */}
@@ -225,15 +264,31 @@ export default function Home() {
             </motion.h2>
             <Link to="/dev-blogs" style={{ textDecoration: 'none' }}>
               <motion.span whileHover={{ x: 5 }} style={{ fontFamily: 'Bangers, cursive', fontSize: '1.2rem', letterSpacing: '0.1em', color: '#FFD700', display: 'inline-block' }}>
-                CLICK HERE FOR THE FULL COMICDOM GAZETTE
+                CLICK HERE FOR THE FULL COMICDOM GAZETTE &rarr;
               </motion.span>
             </Link>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-            {blogPosts.map((post, i) => (
-              <BlogCard key={post.id} post={post} index={i} />
-            ))}
-          </div>
+
+          {loadingPosts ? (
+            <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+              <motion.p animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}
+                style={{ fontFamily: 'Bangers, cursive', fontSize: '2rem', letterSpacing: '0.1em', color: '#FFD700' }}>
+                FETCHING LATEST DISPATCHES...
+              </motion.p>
+            </div>
+          ) : latestPosts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', border: '3px dashed #FFD700', backgroundColor: 'rgba(255,215,0,0.08)' }}>
+              <p style={{ fontFamily: 'Bangers, cursive', fontSize: '1.8rem', letterSpacing: '0.08em', color: '#FFD700', margin: 0 }}>
+                NO DISPATCHES FILED YET — CHECK THE GAZETTE SOON!
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+              {latestPosts.map((post, i) => (
+                <BlogCardDynamic key={post.id} post={post} index={i} />
+              ))}
+            </div>
+          )}
         </div>
       </HalftoneSection>
     </PageTransition>
